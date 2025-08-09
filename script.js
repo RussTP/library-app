@@ -2,11 +2,6 @@
 const addBtn = document.querySelector("#add-btn");
 const bookContainer = document.querySelector("#book-container");
 
-
- 
-
-
-
 const myLibrary = [];
 
 
@@ -23,26 +18,41 @@ function Book(author, title, pages, read) {
 }
 
     function  bookDisplay() {
+    bookContainer.innerHTML = "";
     myLibrary.forEach(book => {
-       const bookCardDiv =  bookContainer.appendChild(document.createElement("div"))
+       const bookCardDiv = document.createElement("div");
         bookCardDiv.classList.add("book-card");
+
         const pTitle = book.title;
         const pAuthor = book.author;
         const pPages = book.pages;
         const pRead = book.read ? "Yes" : "No";
+        
         bookCardDiv.insertAdjacentHTML("beforeend",
             `
             <p>Title: ${pTitle}</p>
             <p>Author: ${pAuthor}</p>
             <p>Pages: ${pPages}</p>
             <p>Read: ${pRead}</p>
-            `
-        )
-        return book;
-     })
+            ` ); 
+      
+    const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Remove"; 
+        deleteBtn.id = book.id;
+
+        deleteBtn.addEventListener("click", () => {
+    const index = myLibrary.findIndex(book => book.id === deleteBtn.id);
+        if (index !== -1) {
+        myLibrary.splice(index, 1)
+          bookDisplay();
+        }
+         
+        }); 
+        bookCardDiv.appendChild(deleteBtn);
+        bookContainer.appendChild(bookCardDiv);
+     });
 
     }
-
 
 
 addBtn.addEventListener("click", function (event) {
@@ -50,7 +60,7 @@ addBtn.addEventListener("click", function (event) {
     
     const bookForm = document.querySelector("#book-form");
     
-     const formHTML = 
+    const formHTML = 
             `<form>
             <label for ="book-title">Book title</label>
             <input type="text" name="name" id="book-title" required>
@@ -72,19 +82,18 @@ addBtn.addEventListener("click", function (event) {
     const pages = parseInt(document.querySelector("#pages").value);
     const read = document.querySelector("#read").checked;
 
-
         addBookToLibrary(author, title, pages, read);
         console.log(myLibrary);
 
         bookForm.innerHTML = "";
         bookContainer.innerHTML = "";
         addBtn.disabled = false;
-         bookDisplay();
+        
+        bookDisplay();
      
-  });
+    });
    
 });
-
 
 
 function addBookToLibrary(author, title, pages, read) {
