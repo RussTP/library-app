@@ -3,6 +3,7 @@ const bookContainer = document.querySelector("#book-container");
 const bookForm = document.querySelector("#book-form");
 
 const myLibrary = [];
+displayDefault()
 
 function Book(author, title, pages, read) {
     if (!new.target) {
@@ -18,6 +19,14 @@ function Book(author, title, pages, read) {
 Book.prototype.changeRead = function () {
     this.read = !this.read;
 };
+
+function displayDefault() {
+    const newBook1 = new Book("Misery", "Stephen King", 310)
+    const newBook2 = new Book()
+    const newBook3 = new Book()
+    const newBook4 = new Book()
+    const newBook5 = new Book()
+}
 
 function bookDisplay() {
     bookContainer.innerHTML = "";
@@ -111,8 +120,6 @@ innerForm.addEventListener("submit", function (event) {
 addBtn.addEventListener("click", () => {
     innerForm.style.display = "block";
     bookForm.style.backgroundColor = "rgb(133, 147, 179)";
-    bookForm.style.width = "25em";
-    bookForm.style.height = "20em";
     addBtn.disabled = true;
 });
 
@@ -120,3 +127,16 @@ function addBookToLibrary(author, title, pages, read) {
     const book = new Book(author, title, pages, read);
     myLibrary.push(book);
 }
+
+
+myLibrary.push(new Book("Default Author", "Default Title", 123, true));
+bookDisplay();
+
+myLibrary.push(new Book("Default Author", "Default Title", 123, true));
+bookDisplay();
+
+myLibrary.push(new Book("Default Author", "Default Title", 123, true));
+bookDisplay();
+
+myLibrary.push(new Book("Default Author", "Default Title", 123, true));
+bookDisplay();
