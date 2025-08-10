@@ -9,3 +9,25 @@
     height: 300px;
     border: 2px solid black;
 }
+
+
+#book-form{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 1;
+    flex-grow: 2;
+    text-align: center;
+}
+
+input, p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12em;
+    height: 2em;
+    flex-shrink: 1;
+    flex-grow: 2;
+
+}
