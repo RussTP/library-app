@@ -21,11 +21,8 @@ Book.prototype.changeRead = function () {
 };
 
 function displayDefault() {
-    const newBook1 = new Book("Misery", "Stephen King", 310)
-    const newBook2 = new Book()
-    const newBook3 = new Book()
-    const newBook4 = new Book()
-    const newBook5 = new Book()
+
+
 }
 
 function bookDisplay() {
@@ -41,15 +38,15 @@ function bookDisplay() {
 
         bookCardDiv.insertAdjacentHTML("beforeend",
             `
-            <p>Title: ${pTitle}</p>
-            <p>Author: ${pAuthor}</p>
-            <p>Pages: ${pPages}</p>
-            <p>Read: ${pRead}</p>
+            <p><b>Title:</b> ${pTitle}</p>
+            <p><b>Author:</b> ${pAuthor}</p>
+            <p><b>Pages:</b> ${pPages}</p>
+            <p><b>Read:</b> ${pRead}</p>
             `
         );
 
         const readBtn = document.createElement("button");
-        readBtn.textContent = `Read: ${pRead}`;
+        readBtn.textContent = "Read Status";
         readBtn.id = book.id;
         readBtn.addEventListener("click", () => {
             const index = myLibrary.findIndex(book => book.id === readBtn.id);
@@ -129,14 +126,14 @@ function addBookToLibrary(author, title, pages, read) {
 }
 
 
-myLibrary.push(new Book("Default Author", "Default Title", 123, true));
+myLibrary.push(new Book("King, Stephen", "Misery", 310, true));
 bookDisplay();
 
-myLibrary.push(new Book("Default Author", "Default Title", 123, true));
+myLibrary.push(new Book("Yarros, Rebecca", "Fourth Wing", 517, false));
 bookDisplay();
 
-myLibrary.push(new Book("Default Author", "Default Title", 123, true));
+myLibrary.push(new Book("Cline, Ernest", "Ready Player One", 480, false));
 bookDisplay();
 
-myLibrary.push(new Book("Default Author", "Default Title", 123, true));
+myLibrary.push(new Book("Herbert, Frank", "Dune", 658, true));
 bookDisplay();
