@@ -46,7 +46,7 @@ function bookDisplay() {
         );
 
         const readBtn = document.createElement("button");
-        readBtn.textContent = "Read Status";
+        readBtn.textContent = "Status";
         readBtn.id = book.id;
         readBtn.addEventListener("click", () => {
             const index = myLibrary.findIndex(book => book.id === readBtn.id);
