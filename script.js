@@ -2,138 +2,127 @@ const addBtn = document.querySelector("#add-btn");
 const bookContainer = document.querySelector("#book-container");
 const bookForm = document.querySelector("#book-form");
 
-const myLibrary = [];
-displayDefault()
 
-function Book(author, title, pages, read) {
-    if (!new.target) {
-        throw Error("You must use the 'new' operator to call the constructor");
-    }
+class Book {
+  constructor(author, title, pages, read) {
     this.id = crypto.randomUUID();
     this.author = author;
     this.title = title;
     this.pages = pages;
     this.read = read;
-}
+  }
 
-Book.prototype.changeRead = function () {
+  toggleRead() {
     this.read = !this.read;
-};
-
-function displayDefault() {
-
-
+  }
 }
 
-function bookDisplay() {
-    bookContainer.innerHTML = "";
-    myLibrary.forEach(book => {
-        const bookCardDiv = document.createElement("div");
-        bookCardDiv.classList.add("book-card");
 
-        const pTitle = book.title;
-        const pAuthor = book.author;
-        const pPages = book.pages;
-        const pRead = book.read ? "Yes" : "No";
+class Library {
+  constructor(container, formContainer, addBtn) {
+    this.books = [];
+    this.container = container;
+    this.formContainer = formContainer;
+    this.addBtn = addBtn;
 
-        bookCardDiv.insertAdjacentHTML("beforeend",
-            `
-            <p><b>Title:</b> ${pTitle}</p>
-            <p><b>Author:</b> ${pAuthor}</p>
-            <p><b>Pages:</b> ${pPages}</p>
-            <p><b>Read:</b> ${pRead}</p>
-            `
-        );
+    this.#renderForm();
+  }
 
-        const readBtn = document.createElement("button");
-        readBtn.textContent = "Status";
-        readBtn.id = book.id;
-        readBtn.addEventListener("click", () => {
-            const index = myLibrary.findIndex(book => book.id === readBtn.id);
-            myLibrary[index].changeRead();
-            bookDisplay();
-        });
+  addBook(book) {
+    this.books.push(book);
+  }
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Remove";
-        deleteBtn.id = book.id;
-        deleteBtn.addEventListener("click", () => {
-            const index = myLibrary.findIndex(book => book.id === deleteBtn.id);
-            if (index !== -1) {
-                myLibrary.splice(index, 1);
-                bookDisplay();
-            }
-        });
+  removeBook(id) {
+    this.books = this.books.filter(book => book.id !== id);
+  }
 
-        bookCardDiv.appendChild(readBtn);
-        bookCardDiv.appendChild(deleteBtn);
-        bookContainer.appendChild(bookCardDiv);
+  display() {
+    this.container.innerHTML = "";
+
+    this.books.forEach(book => {
+      const bookCardDiv = document.createElement("div");
+      bookCardDiv.classList.add("book-card");
+
+      bookCardDiv.insertAdjacentHTML("beforeend", `
+        <p><b>Title:</b> ${book.title}</p>
+        <p><b>Author:</b> ${book.author}</p>
+        <p><b>Pages:</b> ${book.pages}</p>
+        <p><b>Read:</b> ${book.read ? "Yes" : "No"}</p>
+      `);
+
+      const readBtn = document.createElement("button");
+      readBtn.textContent = "Status";
+      readBtn.addEventListener("click", () => {
+        book.toggleRead();
+        this.display();
+      });
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Remove";
+      deleteBtn.addEventListener("click", () => {
+        this.removeBook(book.id);
+        this.display();
+      });
+
+      bookCardDiv.appendChild(readBtn);
+      bookCardDiv.appendChild(deleteBtn);
+      this.container.appendChild(bookCardDiv);
     });
+  }
+
+
+  #renderForm() {
+    const formHTML = `
+      <form id="inner-form" style="display:none;">
+        <label for="book-title">Book title</label>
+        <input type="text" id="book-title" required>
+        <label for="author">Author</label>
+        <input type="text" id="author" required>
+        <label for="pages">Pages</label>
+        <input type="number" id="pages" required>
+        <label for="read">Read</label>
+        <input type="checkbox" id="read">
+        <input type="submit" value="Submit">
+      </form>
+    `;
+
+    this.formContainer.innerHTML = formHTML;
+    this.innerForm = document.querySelector("#inner-form");
+
+    // Handle form submission
+    this.innerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const title = document.querySelector("#book-title").value;
+      const author = document.querySelector("#author").value;
+      const pages = parseInt(document.querySelector("#pages").value);
+      const read = document.querySelector("#read").checked;
+
+      this.addBook(new Book(author, title, pages, read));
+
+      this.innerForm.style.display = "none";
+      this.innerForm.reset();
+      this.addBtn.disabled = false;
+
+      this.display();
+    });
+
+    // Show form on add button
+    this.addBtn.addEventListener("click", () => {
+      this.innerForm.style.display = "block";
+      this.formContainer.style.backgroundColor = "rgb(133, 147, 179)";
+      this.addBtn.disabled = true;
+    });
+  }
 }
 
 
-const formHTML = `
-<form id="inner-form" style="display:none;">
-    <label for="book-title">Book title</label>
-    <input type="text" name="name" id="book-title" required>
-    <label for="author">Author</label>
-    <input type="text" name="author" id="author" required>
-    <label for="pages">Pages</label>
-    <input type="number" name="pages" id="pages" required>
-    <label for="read">Read</label>
-    <input type="checkbox" name="read" id="read">
-    <input type="submit" value="Submit">
-</form>
-`;
+const myLibrary = new Library(bookContainer, bookForm, addBtn);
 
-bookForm.innerHTML = formHTML;
+// Starter books
+myLibrary.addBook(new Book("King, Stephen", "Misery", 310, true));
+myLibrary.addBook(new Book("Yarros, Rebecca", "Fourth Wing", 517, false));
+myLibrary.addBook(new Book("Cline, Ernest", "Ready Player One", 480, false));
+myLibrary.addBook(new Book("Herbert, Frank", "Dune", 658, true));
 
-const innerForm = document.querySelector("#inner-form");
-
-
-innerForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const title = document.querySelector("#book-title").value;
-    const author = document.querySelector("#author").value;
-    const pages = parseInt(document.querySelector("#pages").value);
-    const read = document.querySelector("#read").checked;
-
-    addBookToLibrary(author, title, pages, read);
-    console.log(myLibrary);
-
-    innerForm.style.display = "none";
-    bookForm.style.backgroundColor = "";
-    bookForm.style.width = "";
-    bookForm.style.height = "";
-    innerForm.reset();
-
-    addBtn.disabled = false;
-
-    bookDisplay();
-});
-
-
-addBtn.addEventListener("click", () => {
-    innerForm.style.display = "block";
-    bookForm.style.backgroundColor = "rgb(133, 147, 179)";
-    addBtn.disabled = true;
-});
-
-function addBookToLibrary(author, title, pages, read) {
-    const book = new Book(author, title, pages, read);
-    myLibrary.push(book);
-}
-
-
-myLibrary.push(new Book("King, Stephen", "Misery", 310, true));
-bookDisplay();
-
-myLibrary.push(new Book("Yarros, Rebecca", "Fourth Wing", 517, false));
-bookDisplay();
-
-myLibrary.push(new Book("Cline, Ernest", "Ready Player One", 480, false));
-bookDisplay();
-
-myLibrary.push(new Book("Herbert, Frank", "Dune", 658, true));
-bookDisplay();
+myLibrary.display();
